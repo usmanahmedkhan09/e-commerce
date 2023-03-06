@@ -1,6 +1,7 @@
 const { validationResult } = require('express-validator');
 const mongoose = require('mongoose');
-
+const path = require('path');
+const fs = require('fs');
 
 const Product = require('../models/product.model.js');
 
@@ -135,9 +136,18 @@ exports.deleteProduct = async (req, res, next) =>
     const productId = req.params.productId
     try
     {
-        let response = await Product.findOneAndDelete({ _id: new mongoose.Types.ObjectId(productId) })
+        let product = await Product.findById(productId)
+        if (!product)
+        {
+            let error = new Error('Product not found.')
+            error.status = 422
+            error.data = errors
+            throw error
+        }
+        let response = await Product.deleteOne({ _id: product._id })
         if (response)
         {
+            unlinkImage(response.imageUrl)
             res.status(200).json({ message: 'Product deleted successfully.', product: response })
         }
 
@@ -149,4 +159,13 @@ exports.deleteProduct = async (req, res, next) =>
         }
         next(error)
     }
+}
+
+const unlinkImage = (imagePath) =>
+{
+    imagePath = path.join(__dirname, '..', imagePath)
+    fs.unlink(imagePath, (err, file) =>
+    {
+        console.log(err)
+    })
 }
