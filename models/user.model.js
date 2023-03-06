@@ -13,6 +13,10 @@ const userSchema = mongoose.Schema({
         type: String,
         require: true
     },
-})
+    token: {
+        type: String,
+        default: ''
+    }
+}, { timestamps: true })
 
 module.exports = mongoose.model('user', userSchema)
