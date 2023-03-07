@@ -18,13 +18,14 @@ const signUp = async (req, res, next) =>
     const name = req.body.name
     const email = req.body.email
     const password = req.body.password
+    const role = req.body.role
 
     let hashPassword = await bcrypt.hash(password, 12)
     if (hashPassword)
     {
         try
         {
-            let user = new User({ name: name, email: email, password: hashPassword })
+            let user = new User({ name: name, email: email, password: hashPassword, role: role })
             let response = await user.save()
             if (response)
             {
@@ -68,7 +69,7 @@ const login = async (req, res, next) =>
                 error.data = errors
                 throw error
             }
-            let token = await jsonwebtoken.sign({ userId: user._id, email: user.email }, 'privateKey', { expiresIn: '2h' })
+            let token = await jsonwebtoken.sign({ userId: user._id, email: user.email }, 'privateKey', { expiresIn: '24h' })
             user.token = token
             return res.status(200).json({ message: 'Successfully login', data: user })
         } else

@@ -16,6 +16,10 @@ const userSchema = mongoose.Schema({
     token: {
         type: String,
         default: ''
+    },
+    role: {
+        type: String,
+        default: 'customer'
     }
 }, { timestamps: true })
 

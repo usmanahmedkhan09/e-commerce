@@ -32,8 +32,12 @@ app.use((req, res, next) =>
 
 const authRoutes = require('./routes/auth.js')
 const productRoutes = require('./routes/products')
+const categoryRoutes = require('./routes/category')
+const subcategoryRoutes = require('./routes/subcategory')
 app.use('/auth', authRoutes)
 app.use('/product', productRoutes)
+app.use('/category', categoryRoutes)
+app.use('/subcategory', subcategoryRoutes)
 app.use((error, req, res, next) =>
 {
     return res.status(error.status ?? 500).json({ message: error.message, errorsData: error.data })
