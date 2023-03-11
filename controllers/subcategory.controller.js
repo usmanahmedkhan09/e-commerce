@@ -36,7 +36,27 @@ exports.addSubcategory = async (req, res, next) =>
         if (!error.status)
         {
             error.status = 500
-            error.data = errors
+            error.data = error
+        }
+        next(error)
+    }
+}
+
+exports.getSubcategories = async (req, res, next) =>
+{
+    try
+    {
+        let subcategories = await Subcategory.find().populate('category', { name: 1, _id: 1 }).exec()
+        if (subcategories)
+        {
+            res.status(200).json({ message: 'Subcategories found successfully.', subcategories: subcategories })
+        }
+    } catch (error)
+    {
+        if (!error.status)
+        {
+            error.status = 500
+            error.data = error
         }
         next(error)
     }

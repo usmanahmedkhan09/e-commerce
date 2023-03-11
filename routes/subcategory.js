@@ -10,4 +10,6 @@ router.post('/add', auth, [
     body('name').isString().isLength({ max: 10 }).withMessage('Subcategory is required with max length of 10 characters')
 ], subcategoryController.addSubcategory)
 
+router.get('/', auth, subcategoryController.getSubcategories)
+
 module.exports = router
