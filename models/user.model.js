@@ -20,6 +20,14 @@ const userSchema = mongoose.Schema({
     role: {
         type: String,
         default: 'customer'
+    },
+    isActive: {
+        type: Boolean,
+        default: false
+    },
+    confirmationToken: {
+        type: String,
+        default: null
     }
 }, { timestamps: true })
 

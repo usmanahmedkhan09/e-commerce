@@ -37,4 +37,6 @@ router.post('/login', [
     body('password').isLength({ min: 8 }).trim().withMessage('The password is required and length must be 8 characters long'),
 ], authContoller.login)
 
+router.post('/verify', authContoller.verifyToken)
+
 module.exports = router

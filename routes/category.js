@@ -11,8 +11,20 @@ router.post('/addCategory', auth, [body('name').isString().isLength({ max: 20 })
 
 router.get('/', auth, categoryController.getCategories)
 
-router.put('/updateCategory', [
-    body('name').isString().isLength({ max: 20 }),
+router.put('/updateCategory/:categoryId', [
+    param('categoryId').isString().custom((value) =>
+    {
+        if (!value)
+        {
+            throw new Error('categoryId is required')
+        }
+        return value
+    }),
+    body('name').isString().isLength({ max: 20 }).notEmpty(),
+
+], auth, categoryController.updateCategory)
+
+router.delete('/deleteCategory', auth, [
     body('categoryId').isString().custom((value) =>
     {
         if (!value)
@@ -20,17 +32,6 @@ router.put('/updateCategory', [
             throw new Error('categoryId is required')
         }
         return true
-    })
-], auth, categoryController.updateCategory)
-
-router.delete('/deleteCategory/:categoryId', auth, [
-    param('categoryId').customSanitizer(value =>
-    {
-        if (!value)
-        {
-            throw new Error('categoryId is not found.');
-        }
-        return value
     })
 ], categoryController.deleteCategory)
 

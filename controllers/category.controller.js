@@ -1,6 +1,6 @@
 const { validationResult } = require('express-validator')
 const Category = require('../models/category.model')
-const Subcategory = require('../models/subcategory.model')
+const Brand = require('../models/brand.model')
 
 
 exports.addCategory = async (req, res, next) =>
@@ -10,6 +10,7 @@ exports.addCategory = async (req, res, next) =>
     {
         let error = new Error('Validations failed')
         error.status = 422
+        error.data = errors
         next(error)
     }
 
@@ -41,11 +42,12 @@ exports.updateCategory = async (req, res, next) =>
     {
         let error = new Error('Validations failed')
         error.status = 422
+        error.data = errors
         next(error)
     }
 
     const name = req.body.name
-    const categoryId = req.body.categoryId
+    const categoryId = req.params.categoryId
 
     try
     {
@@ -55,6 +57,9 @@ exports.updateCategory = async (req, res, next) =>
             category.name = name
             let response = await category.save()
             res.status(200).json({ message: 'Category successfully updated.', category: response })
+        } else
+        {
+            res.status(404).send({ message: 'Category not found.', category: {} })
         }
     } catch (error)
     {
@@ -74,16 +79,17 @@ exports.deleteCategory = async (req, res, next) =>
     {
         let error = new Error('Validations failed')
         error.status = 422
+        error.data = errors
         next(error)
     }
-    const categoryId = req.params.categoryId
+    const categoryId = req.body.categoryId
     try
     {
         let category = await Category.findById(categoryId)
         if (category)
         {
             let response = await Category.deleteOne({ _id: category._id })
-            await Subcategory.deleteMany({ category: categoryId })
+            await Brand.deleteMany({ category: categoryId })
             res.status(200).json({ message: 'Category deleted successfully.', category: response })
         }
     } catch (error)

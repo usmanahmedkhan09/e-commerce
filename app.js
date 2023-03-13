@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
@@ -5,7 +6,7 @@ const multer = require('multer')
 const app = express()
 
 
-const MONGODB_URI = 'mongodb+srv://usmanahmed:usman123@node-practice.ivqzeor.mongodb.net/e-commerce'
+
 const diskstorage = multer.diskStorage({
     destination: function (req, file, cb) 
     {
@@ -33,11 +34,11 @@ app.use((req, res, next) =>
 const authRoutes = require('./routes/auth.js')
 const productRoutes = require('./routes/products')
 const categoryRoutes = require('./routes/category')
-const subcategoryRoutes = require('./routes/subcategory')
+const brand = require('./routes/brand')
 app.use('/auth', authRoutes)
 app.use('/product', productRoutes)
 app.use('/category', categoryRoutes)
-app.use('/subcategory', subcategoryRoutes)
+app.use('/brand', brand)
 app.use((error, req, res, next) =>
 {
     return res.status(error.status ?? 500).json({ message: error.message, errorsData: error.data })
@@ -45,9 +46,14 @@ app.use((error, req, res, next) =>
 
 
 mongoose.
-    connect(MONGODB_URI)
+    connect(process.env.MONGODB_URI)
     .then((response) =>
     {
-        console.log('connected')
-        app.listen(3000)
+        app.listen(3000, () =>
+        {
+            console.log('connected to', process.env.MONGODB_URI)
+        })
+    }).catch((error) =>
+    {
+        console.log(error)
     })
