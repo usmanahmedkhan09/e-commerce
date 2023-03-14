@@ -20,7 +20,7 @@ const diskstorage = multer.diskStorage({
 
 app.use(bodyParser.json())
 app.use(
-    multer({ storage: diskstorage }).single('image')
+    multer({ storage: diskstorage }).array('images')
 )
 app.use((req, res, next) =>
 {
@@ -34,11 +34,13 @@ app.use((req, res, next) =>
 const authRoutes = require('./routes/auth.js')
 const productRoutes = require('./routes/products')
 const categoryRoutes = require('./routes/category')
-const brand = require('./routes/brand')
+const brandRoues = require('./routes/brand')
+const seriesRoutes = require('./routes/series')
 app.use('/auth', authRoutes)
 app.use('/product', productRoutes)
 app.use('/category', categoryRoutes)
-app.use('/brand', brand)
+app.use('/brand', brandRoues)
+app.use('/series', seriesRoutes)
 app.use((error, req, res, next) =>
 {
     return res.status(error.status ?? 500).json({ message: error.message, errorsData: error.data })

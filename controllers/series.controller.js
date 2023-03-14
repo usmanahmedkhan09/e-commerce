@@ -56,7 +56,7 @@ exports.updateSeries = async (req, res, next) =>
 
     try
     {
-        let series = Series.findOne({ _id: seriesId })
+        let series = await Series.findOne({ _id: seriesId })
         if (series)
         {
             series.name = name

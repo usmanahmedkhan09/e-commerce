@@ -4,8 +4,8 @@ const productSchema = mongoose.Schema({
         type: String,
         require: true
     },
-    imageUrl: {
-        type: String,
+    productImages: {
+        type: Array,
         require: true
     },
     price: {
@@ -13,10 +13,27 @@ const productSchema = mongoose.Schema({
         require: true
     },
     description: String,
+    quantity: {
+        type: String,
+        require: true
+    },
+    model: { type: String, require: true },
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category'
+    },
+    brand: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Brand'
+    },
+    series: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Series'
+    },
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }
 }, { timestamps: true })
 
-module.exports = mongoose.model('product', productSchema)
+module.exports = mongoose.model('Product', productSchema)

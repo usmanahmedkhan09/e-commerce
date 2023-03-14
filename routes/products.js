@@ -7,11 +7,11 @@ const productController = require('../controllers/product.controller')
 const auth = require('../middlewares/auth.middleware')
 
 
-router.post('/add', auth,
+router.post('/addProduct', auth,
     [
         body('name').isString().notEmpty().withMessage('Product name is mandotary'),
         body('price').isDecimal().notEmpty(),
-        body('description').notEmpty().isLength({ min: 100, max: 500 }).withMessage('Product description must includes 100 to 500 characters.'),
+        body('description').notEmpty().isLength({ min: 10, max: 500 }).withMessage('Product description must includes 100 to 500 characters.'),
     ],
     productController.addProduct)
 
