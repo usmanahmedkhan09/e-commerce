@@ -2,6 +2,7 @@ const { validationResult } = require('express-validator')
 
 
 const Brand = require('../models/brand.model')
+const Series = require('../models/series.model')
 
 
 exports.addBrand = async (req, res, next) =>
@@ -102,6 +103,7 @@ exports.deleteBrand = async (req, res, next) =>
         if (brand)
         {
             let response = await Brand.deleteOne({ _id: brand._id })
+            await Series.deleteMany({ _id: brand._id })
             res.status(200).json({ message: 'Brand deleted successfully.', brand: response })
         } else
         {
