@@ -88,7 +88,13 @@ exports.updateProduct = async (req, res, next) =>
     let updatedFile;
     if (req.files)
     {
-        updatedFile = req.file
+        updatedFile = req.files.map((x) =>
+        {
+            return {
+                fileName: x.originalname,
+                path: x.path
+            }
+        })
     }
 
     try
@@ -99,11 +105,16 @@ exports.updateProduct = async (req, res, next) =>
             product.name = req.body.name
             product.description = req.body.description
             product.price = req.body.price
+            product.quantity = req.body.quantity
+            product.category = req.body.categoryId
+            product.brand = req.body.brandId
+            product.series = req.body.series
+            product.model = req.body.model
             if (!updatedFile)
             {
-                updatedFile = product.image
+                updatedFile = [...product.productImages]
             }
-            product.imageUrl = updatedFile
+            product.productImages = [...updatedFile]
             let response = await product.save()
             res.status(200).json({ message: 'Product updated successfully', data: response })
         } else
