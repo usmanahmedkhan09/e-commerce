@@ -8,21 +8,6 @@ const Product = require('../models/product.model.js');
 exports.addProduct = async (req, res, next) =>
 {
 
-    if (!req.files)
-    {
-        let error = new Error('Image file not found.')
-        error.status = 422
-        error.data = errors
-        return next(error)
-    }
-
-    const files = req.files.map((x) =>
-    {
-        return {
-            fileName: x.originalname,
-            path: x.path
-        }
-    })
 
     const { errors } = validationResult(req)
     if (errors.length > 0)
@@ -32,7 +17,7 @@ exports.addProduct = async (req, res, next) =>
         return next(error)
     }
 
-    const productImages = [...files]
+    const productImages = req.body.images
     const productName = req.body.name
     const productDescription = req.body.description
     const productPrice = req.body.price
@@ -85,18 +70,6 @@ exports.updateProduct = async (req, res, next) =>
         return next(error)
     }
 
-    let updatedFile;
-    if (req.files)
-    {
-
-        updatedFile = req.files.map((x) =>
-        {
-            return {
-                fileName: x.originalname,
-                path: x.path
-            }
-        })
-    }
 
     try
     {
@@ -111,11 +84,7 @@ exports.updateProduct = async (req, res, next) =>
             product.brand = req.body.brandId
             product.series = req.body.series
             product.model = req.body.model
-            if (!updatedFile)
-            {
-                updatedFile = [...product.productImages]
-            }
-            product.productImages = [...updatedFile]
+            product.productImages = req.body.images
             let response = await product.save()
             res.status(200).json({ message: 'Product updated successfully', data: response })
         } else
@@ -161,7 +130,6 @@ exports.deleteProduct = async (req, res, next) =>
         let response = await Product.deleteOne({ _id: product._id })
         if (response)
         {
-            unlinkImage(response.imageUrl)
             res.status(200).json({ message: 'Product deleted successfully.', product: response })
         }
 
@@ -196,13 +164,4 @@ exports.getProducts = async (req, res, next) =>
         next(error)
     }
 
-}
-
-const unlinkImage = (imagePath) =>
-{
-    imagePath = path.join(__dirname, '..', imagePath)
-    fs.unlink(imagePath, (err, file) =>
-    {
-        console.log(err)
-    })
 }
