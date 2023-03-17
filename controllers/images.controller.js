@@ -53,10 +53,10 @@ exports.removeImage = (req, res, next) =>
         return next(error)
     }
 
-    const path = req.file.path
+    const imagePath = req.file.path
+    const fullPath = path.join(__dirname, '..', imagePath)
 
-    const imagePath = path.join(__dirname, '..', path)
-    fs.unlink(imagePath, (error, file) =>
+    fs.unlink(fullPath, (error, file) =>
     {
         if (error)
         {
@@ -68,7 +68,7 @@ exports.removeImage = (req, res, next) =>
             next(error)
         } else
         {
-            res.status(200).json({ message: 'Image deleted successfully.' })
+            res.status(200).json({ message: 'Image deleted successfully.', file: file })
         }
     })
 }
