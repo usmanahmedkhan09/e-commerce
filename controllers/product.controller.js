@@ -88,6 +88,7 @@ exports.updateProduct = async (req, res, next) =>
     let updatedFile;
     if (req.files)
     {
+
         updatedFile = req.files.map((x) =>
         {
             return {
