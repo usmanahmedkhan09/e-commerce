@@ -14,3 +14,6 @@ router.delete('/removeImage', auth, [
     body('name').notEmpty().isString(),
     body('path').notEmpty().isString()
 ], imagesController.removeImage)
+
+
+module.exports = router

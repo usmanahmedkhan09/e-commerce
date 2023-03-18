@@ -95,7 +95,7 @@ const login = async (req, res, next) =>
             }
             let token = await jsonwebtoken.sign({ userId: user._id, email: user.email }, 'privateKey', { expiresIn: '24h' })
             user.token = token
-            return res.status(200).json({ message: 'Successfully login', data: user })
+            return res.status(200).json({ message: 'Successfully login', data: user, isSuccess: true })
         } else
         {
             let error = new Error('User not found.')

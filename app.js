@@ -40,15 +40,15 @@ app.use((req, res, next) =>
 
 
 
-app.use('/auth', authRoutes)
-app.use('/product', productRoutes)
-app.use('/category', categoryRoutes)
-app.use('/brand', brandRoues)
-app.use('/series', seriesRoutes)
-app.use('/image', imagesRoutes)
+app.use('/api/auth', authRoutes)
+app.use('/api/product', productRoutes)
+app.use('/api/category', categoryRoutes)
+app.use('/api/brand', brandRoues)
+app.use('/api/series', seriesRoutes)
+app.use('/api/image', imagesRoutes)
 app.use((error, req, res, next) =>
 {
-    return res.status(error.status ?? 500).json({ message: error.message, errorsData: error.data })
+    return res.status(error.status ?? 500).json({ message: error.message, errorsData: error.data, isSuccess: false })
 })
 
 
