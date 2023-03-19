@@ -20,15 +20,17 @@ router.post('/signup', [
     }).normalizeEmail(),
     body('name').isLength({ min: 5, max: 20 }).trim().isAlpha().withMessage('The name must have 5 to 20 characters long'),
     body('password').isLength({ min: 8 }).trim().withMessage('The password is required and length must be 8 characters long'),
-    body('confirmPassword').isLength({ min: 8 }).trim().custom((value, { req }) =>
-    {
-        if (value !== req.body.password)
-        {
-            throw new Error('Password confirmation does not match password');
-        }
-        return true
-    })
-        .withMessage('Confirm Password is required')
+    // body('confirmPassword').isLength({ min: 8 }).trim().custom((value, { req }) =>
+    // {
+    //     if (value !== req.body.password)
+    //     {
+    //         let error = new Error('Password confirmation does not match password');
+    //         error.status = 422
+    //         return next(error)
+    //     }
+    //     return true
+    // })
+    // .withMessage('Confirm Password is required')
 
 ], authContoller.signUp)
 

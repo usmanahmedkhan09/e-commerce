@@ -14,7 +14,7 @@ const signUp = async (req, res, next) =>
         let error = new Error('Validation failed')
         error.status = 422
         error.data = errors
-        throw error
+        return next(error)
     }
     const name = req.body.name
     const email = req.body.email
@@ -53,7 +53,7 @@ const signUp = async (req, res, next) =>
             })
             if (response)
             {
-                res.status(201).json({ message: 'User successfully created', data: user })
+                res.status(201).json({ message: 'Check your email to activate your account.', data: user, isSuccess: true })
             }
         } catch (error)
         {
@@ -76,7 +76,7 @@ const login = async (req, res, next) =>
         let error = new Error('Validation failed')
         error.status = 422
         error.data = errors
-        throw error
+        return next(error)
     }
     const email = req.body.email
     const password = req.body.password
@@ -89,6 +89,13 @@ const login = async (req, res, next) =>
             if (!matchPassword)
             {
                 let error = new Error('Password is incorrect')
+                error.status = 401
+                error.data = errors
+                throw error
+            }
+            if (!user.isActive)
+            {
+                let error = new Error('Please activate your account.')
                 error.status = 401
                 error.data = errors
                 throw error
