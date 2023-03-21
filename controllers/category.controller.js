@@ -22,7 +22,7 @@ exports.addCategory = async (req, res, next) =>
         let response = await category.save()
         if (response)
         {
-            res.status(201).json({ message: 'Category succssfully created.', category: response })
+            res.status(201).json({ message: 'Category succssfully created.', category: response, isSuccess: true })
         }
     } catch (error)
     {
@@ -108,7 +108,7 @@ exports.getCategories = async (req, res, next) =>
     try
     {
         let categories = await Category.find()
-        res.status(200).json({ message: 'Categories found successfully.', categories: categories })
+        res.status(200).json({ message: 'Categories found successfully.', data: { categories: categories }, isSuccess: true })
     } catch (error)
     {
         if (!error.status)
