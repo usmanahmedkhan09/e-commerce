@@ -3,6 +3,7 @@ const { validationResult } = require('express-validator')
 
 const Brand = require('../models/brand.model')
 const Series = require('../models/series.model')
+const Category = require('../models/category.model')
 
 
 exports.addBrand = async (req, res, next) =>
@@ -29,9 +30,13 @@ exports.addBrand = async (req, res, next) =>
         })
 
         let response = await brand.save()
+        let category = await Category.findOne({ _id: categoryId })
+        category.brands.push(response._id)
+        await category.save()
+
         if (response)
         {
-            res.status(201).json({ message: 'Brand created successfully.', Brand: brand })
+            res.status(201).json({ message: 'Brand created successfully.', Brand: response })
         }
     } catch (error)
     {
@@ -100,10 +105,14 @@ exports.deleteBrand = async (req, res, next) =>
     try
     {
         let brand = await Brand.findOne({ _id: brandId })
+        let category = await Category.findOne({ _id: brand.category })
         if (brand)
         {
+            category.brands.pull(brand._id)
+            await category.save()
             let response = await Brand.deleteOne({ _id: brand._id })
             await Series.deleteMany({ _id: brand._id })
+
             res.status(200).json({ message: 'Brand deleted successfully.', brand: response })
         } else
         {

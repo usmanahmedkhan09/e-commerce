@@ -9,7 +9,9 @@ const auth = require('../middlewares/auth.middleware');
 
 router.post('/addCategory', auth, [body('name').isString().isLength({ max: 20 })], categoryController.addCategory)
 
-router.get('/', auth, categoryController.getCategories)
+router.get('/', categoryController.getCategories)
+
+router.get('/categoryWithBrands', categoryController.categoriesWithBrands)
 
 router.put('/updateCategory/:categoryId', [
     param('categoryId').isString().custom((value) =>
