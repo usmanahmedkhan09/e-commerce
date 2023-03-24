@@ -31,7 +31,7 @@ exports.addBrand = async (req, res, next) =>
 
         if (response)
         {
-            res.status(201).json({ message: 'Brand created successfully.', data: response })
+            res.status(201).json({ message: 'Brand created successfully.', data: response, isSuccess: true })
         }
     } catch (error)
     {
@@ -69,10 +69,10 @@ exports.updateBrand = async (req, res, next) =>
             brand.categories = categories
             let response = await brand.save()
             await Category.updateMany({ '_id': response.categories }, { $pull: { brands: response._id } })
-            res.status(200).json({ message: 'Brand updated successfully.', brand: response })
+            res.status(200).json({ message: 'Brand updated successfully.', data: response, isSuccess: true })
         } else
         {
-            res.status(404).json({ message: 'Brand not found', brand: {} })
+            res.status(404).json({ message: 'Brand not found', brand: {}, isSuccess: false })
         }
     } catch (error)
     {
@@ -107,10 +107,10 @@ exports.deleteBrand = async (req, res, next) =>
             let response = await Brand.deleteOne({ _id: brand._id })
             await Series.deleteMany({ _id: brand._id })
 
-            res.status(200).json({ message: 'Brand deleted successfully.', brand: response })
+            res.status(200).json({ message: 'Brand deleted successfully.', data: response, isSuccess: true })
         } else
         {
-            res.status(404).json({ message: 'Brand not found', brand: {} })
+            res.status(404).json({ message: 'Brand not found', data: {}, isSuccess: false })
         }
     } catch (error)
     {
@@ -131,10 +131,10 @@ exports.getBrands = async (req, res, next) =>
         let brands = await Brand.find().populate('categories', { name: 1, _id: 1 }).exec()
         if (brands)
         {
-            res.status(200).json({ message: 'Brands found successfully.', brands: brands })
+            res.status(200).json({ message: 'Brands found successfully.', data: brands, isSuccess: true })
         } else
         {
-            res.status(404).json({ message: 'Brands not found', brand: [] })
+            res.status(404).json({ message: 'Brands not found', data: [], isSuccess: false })
         }
     } catch (error)
     {
