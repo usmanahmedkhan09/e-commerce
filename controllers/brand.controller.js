@@ -1,9 +1,10 @@
 const { validationResult } = require('express-validator')
 
-
 const Brand = require('../models/brand.model')
 const Series = require('../models/series.model')
 const Category = require('../models/category.model')
+
+
 
 
 exports.addBrand = async (req, res, next) =>
@@ -20,23 +21,17 @@ exports.addBrand = async (req, res, next) =>
     }
 
     const name = req.body.name
-    const categoryId = req.body.categoryId
+    const categories = req.body.categories
 
     try
     {
-        let brand = new Brand({
-            name: name,
-            category: categoryId
-        })
-
+        let brand = new Brand({ name: name, categories: categories })
         let response = await brand.save()
-        let category = await Category.findOne({ _id: categoryId })
-        category.brands.push(response._id)
-        await category.save()
+        await Category.updateMany({ '_id': response.categories }, { $push: { brands: response._id }, })
 
         if (response)
         {
-            res.status(201).json({ message: 'Brand created successfully.', Brand: response })
+            res.status(201).json({ message: 'Brand created successfully.', data: response })
         }
     } catch (error)
     {
@@ -64,15 +59,16 @@ exports.updateBrand = async (req, res, next) =>
 
     const name = req.body.name
     const brandId = req.params.brandId
-    const categoryId = req.body.categoryId
+    const categories = req.body.categories
     try
     {
         let brand = await Brand.findOne({ _id: brandId })
         if (brand)
         {
             brand.name = name
-            brand.categoryId = categoryId
+            brand.categories = categories
             let response = await brand.save()
+            await Category.updateMany({ '_id': response.categories }, { $pull: { brands: response._id } })
             res.status(200).json({ message: 'Brand updated successfully.', brand: response })
         } else
         {
@@ -105,11 +101,12 @@ exports.deleteBrand = async (req, res, next) =>
     try
     {
         let brand = await Brand.findOne({ _id: brandId })
-        let category = await Category.findOne({ _id: brand.category })
+        // let category = await Category.findOne({ _id: brand.category })
         if (brand)
         {
-            category.brands.pull(brand._id)
-            await category.save()
+            await Category.updateMany({ '_id': brand.categories }, { $pull: { brands: brand._id } })
+            // category.brands.pull(brand._id)
+            // await category.save()
             let response = await Brand.deleteOne({ _id: brand._id })
             await Series.deleteMany({ _id: brand._id })
 
@@ -134,7 +131,7 @@ exports.getBrands = async (req, res, next) =>
 {
     try
     {
-        let brands = await Brand.find().populate('category', { name: 1, _id: 1 }).exec()
+        let brands = await Brand.find().populate('categories', { name: 1, _id: 1 }).exec()
         if (brands)
         {
             res.status(200).json({ message: 'Brands found successfully.', brands: brands })

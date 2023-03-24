@@ -20,7 +20,6 @@ router.put('/updateBrand/:brandId', auth, [
         return value
     }),
     body('name').isString().isLength({ max: 10 }).notEmpty().withMessage('Brand is required with max length of 10 characters'),
-    body('categoryId').notEmpty()
 ], brandController.updateBrand)
 
 router.delete('/deleteBrand', auth, brandController.deleteBrand)
