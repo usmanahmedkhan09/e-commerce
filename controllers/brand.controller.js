@@ -101,12 +101,9 @@ exports.deleteBrand = async (req, res, next) =>
     try
     {
         let brand = await Brand.findOne({ _id: brandId })
-        // let category = await Category.findOne({ _id: brand.category })
         if (brand)
         {
             await Category.updateMany({ '_id': brand.categories }, { $pull: { brands: brand._id } })
-            // category.brands.pull(brand._id)
-            // await category.save()
             let response = await Brand.deleteOne({ _id: brand._id })
             await Series.deleteMany({ _id: brand._id })
 
