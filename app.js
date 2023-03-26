@@ -11,6 +11,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const multer = require('multer')
+const path = require('path')
 const app = express()
 
 
@@ -51,7 +52,7 @@ app.use((req, res, next) =>
 })
 
 
-
+app.use('/api/images', express.static(path.join(__dirname, 'images')))
 app.use('/api/auth', authRoutes)
 app.use('/api/product', productRoutes)
 app.use('/api/category', categoryRoutes)

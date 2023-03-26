@@ -40,7 +40,7 @@ exports.uploadSingleImage = (req, res, next) =>
         path: req.file.path
     }
 
-    res.status(200).json({ message: 'Image uploaded successfully.', data: file })
+    res.status(201).json({ message: 'Image uploaded successfully.', data: file, isSuccess: true })
 }
 
 exports.removeImage = (req, res, next) =>

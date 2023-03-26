@@ -23,7 +23,7 @@ exports.addCategory = async (req, res, next) =>
         let response = await category.save()
         if (response)
         {
-            res.status(201).json({ message: 'Category succssfully created.', category: response, isSuccess: true })
+            res.status(201).json({ message: 'Category succssfully created.', data: response, isSuccess: true })
         }
     } catch (error)
     {
