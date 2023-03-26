@@ -27,9 +27,21 @@ const diskstorage = multer.diskStorage({
 })
 
 app.use(bodyParser.json())
-app.use(
-    multer({ storage: diskstorage }).array('images')
-)
+// app.use(
+//     (req, res, next) =>
+//     {
+//         if (req.files && req.files.length > 0)
+//         {
+//             multer({ storage: diskstorage }).array('images')
+//         } else
+//         {
+//             multer({ storage: diskstorage }).single('image')
+//             next()
+//         }
+//     }
+// )
+app.use(multer({ storage: diskstorage }).single('image'))
+
 app.use((req, res, next) =>
 {
     res.setHeader('Access-Control-Allow-Origin', '*');

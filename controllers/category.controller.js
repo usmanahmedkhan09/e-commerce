@@ -15,10 +15,11 @@ exports.addCategory = async (req, res, next) =>
     }
 
     const name = req.body.name
+    const image = req.body.image
 
     try
     {
-        let category = new Category({ name: name })
+        let category = new Category({ name: name, image: image })
         let response = await category.save()
         if (response)
         {
@@ -47,6 +48,7 @@ exports.updateCategory = async (req, res, next) =>
     }
 
     const name = req.body.name
+    const image = req.body.image
     const categoryId = req.params.categoryId
 
     try
@@ -55,6 +57,7 @@ exports.updateCategory = async (req, res, next) =>
         if (category)
         {
             category.name = name
+            category.image = image
             let response = await category.save()
             res.status(200).json({ message: 'Category successfully updated.', category: response })
         } else

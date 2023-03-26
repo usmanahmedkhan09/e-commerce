@@ -7,7 +7,12 @@ const auth = require('../middlewares/auth.middleware');
 
 
 
-router.post('/addCategory', auth, [body('name').isString().isLength({ max: 20 })], categoryController.addCategory)
+router.post('/addCategory', auth,
+    [
+        body('name').isString().isLength({ max: 20 }).notEmpty(),
+        body('image').isString().notEmpty()
+    ],
+    categoryController.addCategory)
 
 router.get('/', categoryController.getCategories)
 
@@ -23,6 +28,7 @@ router.put('/updateCategory/:categoryId', [
         return value
     }),
     body('name').isString().isLength({ max: 20 }).notEmpty(),
+    body('image').isString().notEmpty()
 
 ], auth, categoryController.updateCategory)
 

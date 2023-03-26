@@ -17,7 +17,7 @@ exports.addProduct = async (req, res, next) =>
         return next(error)
     }
 
-    const productImages = req.body.images
+    const productImages = req.body.productImages
     const productName = req.body.name
     const productDescription = req.body.description
     const productPrice = req.body.price
@@ -58,7 +58,6 @@ exports.addProduct = async (req, res, next) =>
 }
 
 
-
 exports.updateProduct = async (req, res, next) =>
 {
     const { errors } = validationResult(req)
@@ -84,7 +83,7 @@ exports.updateProduct = async (req, res, next) =>
             product.brand = req.body.brandId
             product.series = req.body.series
             product.model = req.body.model
-            product.productImages = req.body.images
+            product.productImages = req.body.productImages
             let response = await product.save()
             res.status(200).json({ message: 'Product updated successfully', data: response })
         } else
@@ -164,4 +163,66 @@ exports.getProducts = async (req, res, next) =>
         next(error)
     }
 
+}
+
+
+exports.getlatestProducts = async (req, res, next) =>
+{
+    try
+    {
+        const category = req.query.category
+        const brand = req.query.brand
+        const price = req.query.price
+        let query = null
+        if (price)
+        {
+            query = { price: price }
+        }
+        let response = await Product.find(query)
+            .populate('category', { name: 1 })
+            .populate('user', { name: 1, email: 1 })
+            .populate('brand', { name: 1 })
+            .populate('series', { name: 1 })
+            .exec()
+        let data = response
+        if (category)
+            data = response.filter((x) => x.category.name.toLowerCase() == category.toLowerCase())
+        if (brand)
+            data = data.filter((x) => x.brand.name.toLowerCase() == brand.toLowerCase())
+
+        res.status(200).json({ message: 'Products successfully fetched', data: data, isSuccess: true })
+
+    } catch (error)
+    {
+        if (!error.status)
+        {
+            error.status = 500
+            error.data = error
+        }
+        next(error)
+    }
+}
+exports.getProductByName = async (req, res, next) =>
+{
+    try
+    {
+        const productName = req.params.productName
+        let response = await Product.find({ name: productName })
+            .populate('category', { name: 1 })
+            .populate('user', { name: 1, email: 1 })
+            .populate('brand', { name: 1 })
+            .populate('series', { name: 1 })
+            .exec()
+
+        res.status(200).json({ message: 'Product successfully fetched', data: response, isSuccess: true })
+
+    } catch (error)
+    {
+        if (!error.status)
+        {
+            error.status = 500
+            error.data = error
+        }
+        next(error)
+    }
 }
