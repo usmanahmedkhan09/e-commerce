@@ -17,6 +17,7 @@ router.post('/addProduct', auth,
 
 router.get('/', auth, productController.getProducts)
 router.get('/getLatestProduct', productController.getlatestProducts)
+router.get('/getProductByName/:productName', productController.getlatestProducts)
 
 router.put('/update', auth,
     [
