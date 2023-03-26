@@ -57,12 +57,15 @@ exports.updateCategory = async (req, res, next) =>
         if (category)
         {
             category.name = name
-            category.image = image
+            if (image)
+            {
+                category.image = image
+            }
             let response = await category.save()
-            res.status(200).json({ message: 'Category successfully updated.', category: response })
+            res.status(200).json({ message: 'Category successfully updated.', data: response, isSuccess: true })
         } else
         {
-            res.status(404).send({ message: 'Category not found.', category: {} })
+            res.status(404).send({ message: 'Category not found.', data: {} })
         }
     } catch (error)
     {
@@ -93,7 +96,8 @@ exports.deleteCategory = async (req, res, next) =>
         {
             let response = await Category.deleteOne({ _id: category._id })
             await Brand.deleteMany({ category: categoryId })
-            res.status(200).json({ message: 'Category deleted successfully.', category: response })
+            if (response)
+                res.status(200).json({ message: 'Category deleted successfully.', data: category, isSuccess: true })
         }
     } catch (error)
     {
