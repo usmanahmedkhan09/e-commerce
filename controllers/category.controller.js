@@ -115,7 +115,7 @@ exports.getCategories = async (req, res, next) =>
     try
     {
         let categories = await Category.find().populate('brands', { name: 1, _id: 1 })
-        res.status(200).json({ message: 'Categories found successfully.', data: { categories: categories }, isSuccess: true })
+        res.status(200).json({ data: { categories: categories }, isSuccess: true })
     } catch (error)
     {
         if (!error.status)

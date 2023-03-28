@@ -67,8 +67,12 @@ exports.updateBrand = async (req, res, next) =>
         {
             brand.name = name
             brand.categories = categories
-            let response = await brand.save()
+            let response = await brand.save(function (err, brand)
+            {
+                brand.populate('categories')
+            })
             await Category.updateMany({ '_id': response.categories }, { $pull: { brands: response._id } })
+            // let res = await response.populate('categories', { name: 1, _id: 1 }).exec()
             res.status(200).json({ message: 'Brand updated successfully.', data: response, isSuccess: true })
         } else
         {
@@ -131,7 +135,7 @@ exports.getBrands = async (req, res, next) =>
         let brands = await Brand.find().populate('categories', { name: 1, _id: 1 }).exec()
         if (brands)
         {
-            res.status(200).json({ message: 'Brands found successfully.', data: brands, isSuccess: true })
+            res.status(200).json({ data: brands, isSuccess: true })
         } else
         {
             res.status(404).json({ message: 'Brands not found', data: [], isSuccess: false })
