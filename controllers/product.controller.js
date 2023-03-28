@@ -43,7 +43,7 @@ exports.addProduct = async (req, res, next) =>
 
         })
         let response = await product.save()
-        res.status(201).json({ message: 'Product successfully created.', product: response })
+        res.status(201).json({ message: 'Product successfully created.', data: response, isSuccess: true })
 
     } catch (error)
     {
@@ -85,7 +85,7 @@ exports.updateProduct = async (req, res, next) =>
             product.model = req.body.model
             product.productImages = req.body.productImages
             let response = await product.save()
-            res.status(200).json({ message: 'Product updated successfully', data: response })
+            res.status(200).json({ message: 'Product updated successfully', data: response, isSuccess: true })
         } else
         {
             let error = new Error('Product not found.')

@@ -26,7 +26,7 @@ exports.addBrand = async (req, res, next) =>
     try
     {
         let brand = new Brand({ name: name, categories: categories })
-        let response = await brand.save()
+        let response = await brand.save().then((brand) => brand.populate('categories', { name: 1, _id: 1 }))
         await Category.updateMany({ '_id': response.categories }, { $push: { brands: response._id }, })
 
         if (response)
