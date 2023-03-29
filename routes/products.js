@@ -16,6 +16,17 @@ router.post('/addProduct', auth,
     productController.addProduct)
 
 router.get('/', auth, productController.getProducts)
+router.get('/:productId', auth, [
+    param('productId').customSanitizer(value =>
+    {
+        if (!value)
+        {
+            throw new Error('Product id is not found.');
+        }
+        return value
+    })
+], productController.getProductById)
+
 router.get('/getLatestProduct', productController.getlatestProducts)
 router.get('/getProductByName/:productName', productController.getlatestProducts)
 

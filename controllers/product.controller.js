@@ -152,7 +152,7 @@ exports.getProducts = async (req, res, next) =>
             .populate('brand', { name: 1 })
             .populate('series', { name: 1 })
             .exec()
-        res.status(200).json({ message: 'Products successfully fetched', products: response })
+        res.status(200).json({ message: '', data: response, isSuccess: true })
     } catch (error)
     {
         if (!error.status)
@@ -165,6 +165,33 @@ exports.getProducts = async (req, res, next) =>
 
 }
 
+exports.getProductById = async (req, res, next) =>
+{
+    const { errors } = validationResult(req)
+    if (errors.length > 0)
+    {
+        let error = new Error('Validations failed')
+        error.status = 422
+        error.data = errors
+        return next(error)
+    }
+
+    const productId = req.params.productId
+
+    try
+    {
+        let response = await Product.findById(productId)
+        res.status(200).json({ message: '', data: response, isSuccess: true })
+    } catch (error)
+    {
+        if (!error.status)
+        {
+            error.status = 500
+            error.data = error
+        }
+        next(error)
+    }
+}
 
 exports.getlatestProducts = async (req, res, next) =>
 {
@@ -202,6 +229,7 @@ exports.getlatestProducts = async (req, res, next) =>
         next(error)
     }
 }
+
 exports.getProductByName = async (req, res, next) =>
 {
     try
