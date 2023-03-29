@@ -40,8 +40,8 @@ router.put('/update', auth,
     productController.updateProduct
 )
 
-router.delete('/delete/:productId', auth, [
-    param('productId').customSanitizer(value =>
+router.delete('/deleteProduct', auth, [
+    body('productId').custom(value =>
     {
         if (!value)
         {

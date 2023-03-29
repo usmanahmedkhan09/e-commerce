@@ -115,7 +115,7 @@ exports.deleteProduct = async (req, res, next) =>
         next(error)
     }
 
-    const productId = req.params.productId
+    const productId = req.body.productId
     try
     {
         let product = await Product.findById(productId)
@@ -129,7 +129,7 @@ exports.deleteProduct = async (req, res, next) =>
         let response = await Product.deleteOne({ _id: product._id })
         if (response)
         {
-            res.status(200).json({ message: 'Product deleted successfully.', product: response })
+            res.status(200).json({ message: 'Product deleted successfully.', data: response, isSuccess: true })
         }
 
     } catch (error)
