@@ -133,7 +133,6 @@ exports.categoriesWithBrands = async (req, res, next) =>
     {
         let categories = await Category.find()
         let brand = await categories.populate('brands')
-        console.log(brand)
         res.status(200).json({ message: 'Categories found successfully.', data: { categories: categories }, isSuccess: true })
     } catch (error)
     {

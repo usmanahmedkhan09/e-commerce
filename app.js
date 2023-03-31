@@ -4,6 +4,7 @@ const categoryRoutes = require('./routes/category')
 const brandRoues = require('./routes/brand')
 const seriesRoutes = require('./routes/series')
 const imagesRoutes = require('./routes/images')
+const faqRoutes = require('./routes/faq')
 
 
 require('dotenv').config()
@@ -59,6 +60,8 @@ app.use('/api/category', categoryRoutes)
 app.use('/api/brand', brandRoues)
 app.use('/api/series', seriesRoutes)
 app.use('/api/image', imagesRoutes)
+app.use('/api/faq', faqRoutes)
+
 app.use((error, req, res, next) =>
 {
     return res.status(error.status ?? 500).json({ message: error.message, errorsData: error.data, isSuccess: false })
