@@ -30,10 +30,43 @@ const productSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Series'
     },
+    generalFeatures: {
+        type: mongoose.Schema.Types.Mixed
+    },
+    display: {
+        type: mongoose.Schema.Types.Mixed
+    },
+    memory: {
+        type: mongoose.Schema.Types.Mixed
+    },
+    performance: {
+        type: mongoose.Schema.Types.Mixed
+    },
+    battery: {
+        type: mongoose.Schema.Types.Mixed
+    },
+    camera: {
+        type: mongoose.Schema.Types.Mixed
+    },
+    connectivity: {
+        type: mongoose.Schema.Types.Mixed
+    },
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }
 }, { timestamps: true })
 
+
+const generalFeatures = mongoose.Schema({
+    releaseDate: String,
+    dimensions: String,
+    simSupport: String,
+    weight: String,
+    operatingSystem: String
+})
+
+mongoose.model('GeneralFeatures', generalFeatures)
+
 module.exports = mongoose.model('Product', productSchema)
+

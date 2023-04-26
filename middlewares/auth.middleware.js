@@ -17,7 +17,7 @@ module.exports = (req, res, next) =>
         decodeToken = jsonwebtoken.verify(token, 'privateKey')
     } catch (error)
     {
-        error.status = 500
+        error.status = 401
         throw error
     }
 

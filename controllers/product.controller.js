@@ -1,8 +1,8 @@
 const { validationResult } = require('express-validator');
-const path = require('path');
-const fs = require('fs');
+
 
 const Product = require('../models/product.model.js');
+const { features } = require('process');
 
 
 exports.addProduct = async (req, res, next) =>
@@ -26,6 +26,13 @@ exports.addProduct = async (req, res, next) =>
     const productCategoryId = req.body.categoryId
     const brandId = req.body.brandId
     const seriesId = req.body.seriesId
+    const generalFeatures = req.body.generalFeatures
+    const display = req.body.display
+    const memory = req.body.memory
+    const performance = req.body.performance
+    const battery = req.body.battery
+    const camera = req.body.camera
+    const connectivity = req.body.connectivity
 
     try
     {
@@ -40,6 +47,13 @@ exports.addProduct = async (req, res, next) =>
             series: seriesId,
             model: productModel,
             user: req.userId,
+            generalFeatures: generalFeatures,
+            display: display,
+            memory: memory,
+            performance: performance,
+            battery: battery,
+            camera: camera,
+            connectivity: connectivity,
 
         })
         let response = await product.save()
@@ -84,6 +98,13 @@ exports.updateProduct = async (req, res, next) =>
             product.series = req.body.series
             product.model = req.body.model
             product.productImages = req.body.productImages
+            product.generalFeatures = req.generalFeatures
+            product.display = req.display
+            product.memory = req.memory
+            product.performance = req.performance
+            product.battery = req.battery
+            product.camera = req.camera
+            product.connectivity = req.connectivity
             let response = await product.save()
             res.status(200).json({ message: 'Product updated successfully', data: response, isSuccess: true })
         } else
@@ -180,7 +201,8 @@ exports.getProductById = async (req, res, next) =>
 
     try
     {
-        let response = await Product.findById(productId)
+        let response = await Product.findOne({ _id: productId }, { category: 0, brand: 0 })
+            .select({ ...Object.keys(Product.schema.obj).reduce((acc, key) => { acc[key] = `$${key}`; return acc; }, {}), brandId: '$brand', categoryId: '$category' });
         res.status(200).json({ message: '', data: response, isSuccess: true })
     } catch (error)
     {
