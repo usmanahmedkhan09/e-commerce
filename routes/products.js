@@ -27,8 +27,6 @@ router.get('/:productId', auth, [
     })
 ], productController.getProductById)
 
-router.get('/getLatestProduct', productController.getlatestProducts)
-router.get('/getProductByName/:productName', productController.getlatestProducts)
 
 router.put('/update', auth,
     [
@@ -50,5 +48,11 @@ router.delete('/deleteProduct', auth, [
         return value
     })
 ], productController.deleteProduct)
+
+router.get('/getproductsByCategoryName/:categoryName', productController.getproductsByCategory)
+
+router.get('/getLatestProduct', productController.getlatestProducts)
+
+router.get('/getProductByName/:productName', productController.getlatestProducts)
 
 module.exports = router

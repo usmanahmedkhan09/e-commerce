@@ -1,8 +1,8 @@
 const { validationResult } = require('express-validator');
+const mongoose = require('mongoose')
 
 
 const Product = require('../models/product.model.js');
-const { features } = require('process');
 
 
 exports.addProduct = async (req, res, next) =>
@@ -33,6 +33,7 @@ exports.addProduct = async (req, res, next) =>
     const battery = req.body.battery
     const camera = req.body.camera
     const connectivity = req.body.connectivity
+    const discount = req.body.discount
 
     try
     {
@@ -54,6 +55,7 @@ exports.addProduct = async (req, res, next) =>
             battery: battery,
             camera: camera,
             connectivity: connectivity,
+            discount: discount
 
         })
         let response = await product.save()
@@ -105,6 +107,7 @@ exports.updateProduct = async (req, res, next) =>
             product.battery = req.battery
             product.camera = req.camera
             product.connectivity = req.connectivity
+            product.discount = req.discount
             let response = await product.save()
             res.status(200).json({ message: 'Product updated successfully', data: response, isSuccess: true })
         } else
@@ -201,7 +204,7 @@ exports.getProductById = async (req, res, next) =>
 
     try
     {
-        let response = await Product.findOne({ _id: productId }, { category: 0, brand: 0 })
+        let response = await Product.findOne({ _id: productId })
             .select({ ...Object.keys(Product.schema.obj).reduce((acc, key) => { acc[key] = `$${key}`; return acc; }, {}), brandId: '$brand', categoryId: '$category' });
         res.status(200).json({ message: '', data: response, isSuccess: true })
     } catch (error)
@@ -227,6 +230,7 @@ exports.getlatestProducts = async (req, res, next) =>
         {
             query = { price: price }
         }
+
         let response = await Product.find(query)
             .populate('category', { name: 1 })
             .populate('user', { name: 1, email: 1 })
@@ -266,6 +270,43 @@ exports.getProductByName = async (req, res, next) =>
 
         res.status(200).json({ message: 'Product successfully fetched', data: response, isSuccess: true })
 
+    } catch (error)
+    {
+        if (!error.status)
+        {
+            error.status = 500
+            error.data = error
+        }
+        next(error)
+    }
+}
+
+
+exports.getproductsByCategory = async (req, res, next) =>
+{
+    try
+    {
+        const categoryName = req.params.categoryName
+        let response = await Product.aggregate([
+            {
+                $lookup: {
+                    from: 'categories',
+                    localField: 'category',
+                    foreignField: '_id',
+                    as: 'category'
+                }
+            },
+            {
+                $match: {
+                    'category.name': categoryName
+                }
+            },
+            {
+                $project: { name: 1, price: 1, productImages: 1 }
+            }
+        ]).limit(8)
+
+        res.status(200).json({ message: 'Products successfully fetched', data: response, isSuccess: true })
     } catch (error)
     {
         if (!error.status)
