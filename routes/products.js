@@ -11,12 +11,11 @@ router.post('/addProduct', auth,
     [
         body('name').isString().notEmpty().withMessage('Product name is mandotary'),
         body('price').isDecimal().notEmpty(),
-        body('description').notEmpty().isLength({ min: 10, max: 500 }).withMessage('Product description must includes 100 to 500 characters.'),
     ],
     productController.addProduct)
 
 router.get('/', auth, productController.getProducts)
-router.get('/:productId', auth, [
+router.get('productById/:productId', auth, [
     param('productId').customSanitizer(value =>
     {
         if (!value)
@@ -49,10 +48,13 @@ router.delete('/deleteProduct', auth, [
     })
 ], productController.deleteProduct)
 
+router.get('/getBestSellingProducts', productController.getBestSellingProducts)
+
 router.get('/getproductsByCategoryName/:categoryName', productController.getproductsByCategory)
 
 router.get('/getLatestProduct', productController.getlatestProducts)
 
 router.get('/getProductByName/:productName', productController.getlatestProducts)
+
 
 module.exports = router

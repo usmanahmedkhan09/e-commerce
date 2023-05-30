@@ -16,7 +16,6 @@ const productSchema = mongoose.Schema({
         type: Number,
         default: 0
     },
-    description: String,
     quantity: {
         type: Number,
         require: true
@@ -29,10 +28,6 @@ const productSchema = mongoose.Schema({
     brand: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Brand'
-    },
-    series: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Series'
     },
     generalFeatures: {
         type: mongoose.Schema.Types.Mixed

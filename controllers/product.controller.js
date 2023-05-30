@@ -19,13 +19,11 @@ exports.addProduct = async (req, res, next) =>
 
     const productImages = req.body.productImages
     const productName = req.body.name
-    const productDescription = req.body.description
     const productPrice = req.body.price
     const productModel = req.body.model
     const productQuantity = req.body.quantity
     const productCategoryId = req.body.categoryId
     const brandId = req.body.brandId
-    const seriesId = req.body.seriesId
     const generalFeatures = req.body.generalFeatures
     const display = req.body.display
     const memory = req.body.memory
@@ -39,13 +37,11 @@ exports.addProduct = async (req, res, next) =>
     {
         let product = new Product({
             name: productName,
-            description: productDescription,
             price: productPrice,
             productImages: productImages,
             quantity: productQuantity,
             category: productCategoryId,
             brand: brandId,
-            series: seriesId,
             model: productModel,
             user: req.userId,
             generalFeatures: generalFeatures,
@@ -92,12 +88,10 @@ exports.updateProduct = async (req, res, next) =>
         if (product)
         {
             product.name = req.body.name
-            product.description = req.body.description
             product.price = req.body.price
             product.quantity = req.body.quantity
             product.category = req.body.categoryId
             product.brand = req.body.brandId
-            product.series = req.body.series
             product.model = req.body.model
             product.productImages = req.body.productImages
             product.generalFeatures = req.generalFeatures
@@ -174,7 +168,6 @@ exports.getProducts = async (req, res, next) =>
             .populate('category', { name: 1 })
             .populate('user', { name: 1, email: 1 })
             .populate('brand', { name: 1 })
-            .populate('series', { name: 1 })
             .exec()
         res.status(200).json({ message: '', data: response, isSuccess: true })
     } catch (error)
@@ -306,7 +299,47 @@ exports.getproductsByCategory = async (req, res, next) =>
             }
         ]).limit(8)
 
-        res.status(200).json({ message: 'Products successfully fetched', data: response, isSuccess: true })
+        res.status(200).json({ message: '', data: response, isSuccess: true })
+    } catch (error)
+    {
+        if (!error.status)
+        {
+            error.status = 500
+            error.data = error
+        }
+        next(error)
+    }
+}
+
+exports.getBestSellingProducts = async (req, res, next) =>
+{
+    try
+    {
+        let products = await Product.aggregate([
+            {
+                $lookup: {
+                    from: "categories",
+                    localField: "category",
+                    foreignField: "_id",
+                    as: "category"
+                }
+            },
+            {
+                $group: {
+                    _id: "$category",
+                    product: { $first: "$$ROOT" },
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    "product.category.brand": 0
+                }
+            }
+        ])
+
+        res.status(200).json({ message: '', data: products, isSuccess: true })
+
     } catch (error)
     {
         if (!error.status)
