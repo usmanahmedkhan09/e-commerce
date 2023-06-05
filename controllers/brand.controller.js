@@ -68,6 +68,7 @@ exports.updateBrand = async (req, res, next) =>
             brand.name = name
             brand.categories = categories
             let response = await brand.save().then((brand) => brand.populate('categories', { name: 1, _id: 1 }))
+            await Category.updateMany({ _id: { $nin: response.categories } }, { $pull: response._id })
             await Category.updateMany({ '_id': response.categories }, { $push: { brands: response._id } })
             res.status(200).json({ message: 'Brand updated successfully.', data: response, isSuccess: true })
         } else
