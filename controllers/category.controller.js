@@ -49,6 +49,7 @@ exports.updateCategory = async (req, res, next) =>
 
     const name = req.body.name
     const image = req.body.image
+    // const brands = req.body.brands
     const categoryId = req.params.categoryId
 
     try
@@ -114,7 +115,7 @@ exports.getCategories = async (req, res, next) =>
 {
     try
     {
-        let categories = await Category.find().populate('brands', { name: 1, _id: 1 })
+        let categories = await Category.find().populate({ path: 'brands', select: { name: 1, _id: 1 }, options: { sort: { name: 1 } } })
         res.status(200).json({ data: { categories: categories }, isSuccess: true })
     } catch (error)
     {
