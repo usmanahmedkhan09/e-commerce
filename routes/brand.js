@@ -26,4 +26,6 @@ router.delete('/deleteBrand', auth, brandController.deleteBrand)
 
 router.get('/', auth, brandController.getBrands)
 
+router.get('/getBrandsByCategory/:categoryName', brandController.getBrandsByCategory)
+
 module.exports = router

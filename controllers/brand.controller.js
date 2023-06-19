@@ -147,3 +147,46 @@ exports.getBrands = async (req, res, next) =>
         next(error)
     }
 }
+
+exports.getBrandsByCategory = async (req, res, next) =>
+{
+    console.log(req.params.categoryName)
+    const categoryName = req.params.categoryName
+    try
+    {
+        let brands = await Brand.aggregate([
+            {
+                $lookup:
+                {
+                    from: "categories",
+                    localField: "categories",
+                    foreignField: "_id",
+                    as: "categories"
+                }
+            },
+            {
+                $match: { "categories.name": categoryName }
+            },
+            {
+                $project: {
+                    name: 1,
+                },
+            },
+        ])
+        if (brands)
+        {
+            res.status(200).json({ data: brands, isSuccess: true })
+        } else
+        {
+            res.status(404).json({ message: 'Brands not found', data: [], isSuccess: false })
+        }
+    } catch (error)
+    {
+        if (!error.status)
+        {
+            error.status = 500
+            error.data = error
+        }
+        next(error)
+    }
+}
