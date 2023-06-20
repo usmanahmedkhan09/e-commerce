@@ -279,7 +279,13 @@ exports.getproductsByCategory = async (req, res, next) =>
 {
     try
     {
-        const categoryName = req.params.categoryName
+        let filters = {
+            'category.name': req.params.categoryName
+        }
+        if (req.query.brand)
+        {
+            filters["brand.name"] = { $in: req.query.brand.split("-") }
+        }
         let response = await Product.aggregate([
             {
                 $lookup: {
@@ -290,14 +296,23 @@ exports.getproductsByCategory = async (req, res, next) =>
                 }
             },
             {
-                $match: {
-                    'category.name': categoryName
+                $lookup: {
+                    from: 'brands',
+                    localField: 'brand',
+                    foreignField: '_id',
+                    as: 'brand'
                 }
             },
             {
+                $match: filters
+            },
+            {
                 $project: { name: 1, price: 1, productImages: 1 }
+            },
+            {
+                $sort: { "name": +req.query.sort }
             }
-        ]).limit(8)
+        ]).limit(+req.query.count)
 
         res.status(200).json({ message: '', data: response, isSuccess: true })
     } catch (error)
