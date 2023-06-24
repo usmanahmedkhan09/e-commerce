@@ -311,10 +311,19 @@ exports.getproductsByCategory = async (req, res, next) =>
             },
             {
                 $sort: { "name": +req.query.sort }
+            },
+            {
+                $skip: (+req.query.page - 1) * +req.query.count
+            },
+            {
+                $limit: +req.query.count ?? 8
+            },
+            {
+                $group: { _id: null, products: { $push: "$$ROOT" }, totalCount: { $sum: 1 } }
             }
-        ]).limit(+req.query.count)
+        ])
 
-        res.status(200).json({ message: '', data: response, isSuccess: true })
+        res.status(200).json({ message: '', data: response[0], isSuccess: true })
     } catch (error)
     {
         if (!error.status)
