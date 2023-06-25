@@ -289,6 +289,7 @@ exports.getproductsByCategory = async (req, res, next) =>
 
         let pageNumber = +req.query.page
         let count = +req.query.count
+        let sort = { "name": req.query.sort ? +req.query.sort : 1 }
         let response = await Product.aggregate([
             {
                 $lookup: {
@@ -313,7 +314,7 @@ exports.getproductsByCategory = async (req, res, next) =>
                 $project: { name: 1, price: 1, productImages: 1 }
             },
             {
-                $sort: { "name": +req.query.sort }
+                $sort: sort
             },
             {
                 $group: { _id: null, products: { $push: "$$ROOT" }, totalCount: { $sum: 1 } }
@@ -323,7 +324,7 @@ exports.getproductsByCategory = async (req, res, next) =>
             },
         ])
 
-        res.status(200).json({ message: '', data: response[0], isSuccess: true })
+        res.status(200).json({ message: '', data: response[0] ?? [], isSuccess: response[0] ? true : false })
     } catch (error)
     {
         if (!error.status)
