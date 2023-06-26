@@ -253,12 +253,11 @@ exports.getProductByName = async (req, res, next) =>
 {
     try
     {
-        const productName = req.params.productName
+        const productName = req.params.productName.split("-").join(" ")
         let response = await Product.find({ name: productName })
             .populate('category', { name: 1 })
             .populate('user', { name: 1, email: 1 })
             .populate('brand', { name: 1 })
-            .populate('series', { name: 1 })
             .exec()
 
         res.status(200).json({ message: 'Product successfully fetched', data: response, isSuccess: true })

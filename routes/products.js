@@ -54,7 +54,7 @@ router.get('/getproductsByCategoryName/:categoryName', productController.getprod
 
 router.get('/getLatestProduct', productController.getlatestProducts)
 
-router.get('/getProductByName/:productName', productController.getlatestProducts)
+router.get('/getProductByName/:productName', productController.getProductByName)
 
 
 module.exports = router
