@@ -20,6 +20,6 @@ router.delete('/deleteFaq', auth, [
     body('faqId').notEmpty().isString(),
 ], faqController.deleteFaq)
 
-router.get('/getAllFaqs', faqController.getFaqs)
+router.get('/get/:productId', faqController.getFaqs)
 
 module.exports = router

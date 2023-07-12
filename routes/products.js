@@ -15,7 +15,7 @@ router.post('/addProduct', auth,
     productController.addProduct)
 
 router.get('/', auth, productController.getProducts)
-router.get('productById/:productId', auth, [
+router.get('/productById/:productId', auth, [
     param('productId').customSanitizer(value =>
     {
         if (!value)
@@ -31,7 +31,6 @@ router.put('/update', auth,
     [
         body('name').isString().withMessage('Product name is mandotary'),
         body('price').isDecimal().withMessage('Price is required'),
-        body('description').isLength({ min: 100, max: 500 }).withMessage('Product description must includes 100 to 500 characters.'),
         body('productId').isString().withMessage('Product id is required.')
     ],
     productController.updateProduct

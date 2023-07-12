@@ -120,17 +120,11 @@ exports.deleteFaq = async (req, res, next) =>
 
 exports.getFaqs = async (req, res, next) =>
 {
-    let query = null
-
-    if (req.query.productId)
-    {
-        query = { product: req.query.productId }
-    }
 
     try
     {
-        let faqs = await Faq.find(query)
-        res.status(200).json({ message: 'faqs found successfully.', data: faqs, isSuccess: true })
+        let faqs = await Faq.find({ product: req.params.productId })
+        res.status(200).json({ message: '', data: faqs, isSuccess: true })
     } catch (error)
     {
         if (!error.status)

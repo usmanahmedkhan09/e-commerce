@@ -18,7 +18,7 @@ exports.addProduct = async (req, res, next) =>
     }
 
     const productImages = req.body.productImages
-    const productName = req.body.name
+    const productName = req.body.name.toLowerCase()
     const productPrice = req.body.price
     const productModel = req.body.model
     const productQuantity = req.body.quantity
@@ -87,7 +87,7 @@ exports.updateProduct = async (req, res, next) =>
         let product = await Product.findById(req.body.productId)
         if (product)
         {
-            product.name = req.body.name
+            product.name = req.body.name.toLowerCase()
             product.price = req.body.price
             product.quantity = req.body.quantity
             product.category = req.body.categoryId
@@ -229,6 +229,7 @@ exports.getlatestProducts = async (req, res, next) =>
             .populate('user', { name: 1, email: 1 })
             .populate('brand', { name: 1 })
             .populate('series', { name: 1 })
+            .limit(8)
             .exec()
         let data = response
         if (category)
@@ -259,8 +260,8 @@ exports.getProductByName = async (req, res, next) =>
             .populate('user', { name: 1, email: 1 })
             .populate('brand', { name: 1 })
             .exec()
-
-        res.status(200).json({ message: 'Product successfully fetched', data: response, isSuccess: true })
+        console.log(response)
+        res.status(200).json({ message: '', data: response[0], isSuccess: true })
 
     } catch (error)
     {
