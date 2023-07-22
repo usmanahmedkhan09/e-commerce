@@ -7,6 +7,7 @@ module.exports = (req, res, next) =>
     {
         const error = new Error('Not Authenticated')
         error.status = 401
+        return next(error)
         throw error
     }
 
@@ -17,7 +18,9 @@ module.exports = (req, res, next) =>
         decodeToken = jsonwebtoken.verify(token, 'privateKey')
     } catch (error)
     {
+        console.log('hererer', decodeToken)
         error.status = 401
+        return next(error)
         throw error
     }
 
@@ -25,6 +28,7 @@ module.exports = (req, res, next) =>
     {
         const error = new Error('Not Authenticated')
         error.status = 401
+        return next(error)
         throw error
     }
 

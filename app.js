@@ -64,7 +64,8 @@ app.use('/api/faq', faqRoutes)
 
 app.use((error, req, res, next) =>
 {
-    return res.status(error.status ?? 500).json({ message: error.message, errorsData: error.data, isSuccess: false })
+    return res.status(error.status ?? 500)
+        .json({ message: error.message, errorsData: error.data, isSuccess: false, status: error.status ?? 500 })
 })
 
 

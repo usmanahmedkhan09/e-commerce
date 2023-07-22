@@ -94,14 +94,14 @@ exports.updateProduct = async (req, res, next) =>
             product.brand = req.body.brandId
             product.model = req.body.model
             product.productImages = req.body.productImages
-            product.generalFeatures = req.generalFeatures
-            product.display = req.display
-            product.memory = req.memory
-            product.performance = req.performance
-            product.battery = req.battery
-            product.camera = req.camera
-            product.connectivity = req.connectivity
-            product.discount = req.discount
+            product.generalFeatures = req.body.generalFeatures
+            product.display = req.body.display
+            product.memory = req.body.memory
+            product.performance = req.body.performance
+            product.battery = req.body.battery
+            product.camera = req.body.camera
+            product.connectivity = req.body.connectivity
+            product.discount = req.body.discount
             let response = await product.save()
             res.status(200).json({ message: 'Product updated successfully', data: response, isSuccess: true })
         } else
@@ -177,6 +177,7 @@ exports.getProducts = async (req, res, next) =>
             error.status = 500
             error.data = error
         }
+
         next(error)
     }
 
@@ -260,7 +261,6 @@ exports.getProductByName = async (req, res, next) =>
             .populate('user', { name: 1, email: 1 })
             .populate('brand', { name: 1 })
             .exec()
-        console.log(response)
         res.status(200).json({ message: '', data: response[0], isSuccess: true })
 
     } catch (error)
@@ -289,7 +289,7 @@ exports.getproductsByCategory = async (req, res, next) =>
 
         let pageNumber = +req.query.page
         let count = +req.query.count
-        let sort = { "name": req.query.sort ? +req.query.sort : 1 }
+        let sort = { "price": req.query.sort ? +req.query.sort : -1 }
         let response = await Product.aggregate([
             {
                 $lookup: {
